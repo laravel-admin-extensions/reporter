@@ -1,5 +1,13 @@
 <div class="box box-primary">
 
+    <div class="box-header">
+        <h3 class="box-title">&nbsp;</h3>
+
+        <div class="box-tools">
+            <a href="{{ route('exceptions.index') }}" class="btn btn-sm btn-default"><i class="fa fa-list"></i>&nbsp;{{ trans('admin.list') }}</a>
+        </div>
+    </div>
+
     <!-- /.box-header -->
     <div class="box-body">
         <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
@@ -102,7 +110,7 @@
     <div class="box-header">
 
         <i class="fa fa-file-code-o" style="color: #4c748c;"></i>
-        <h3 class="box-title">Trace</h3>
+        <h3 class="box-title">Exception Trace</h3>
 
     </div>
     <!-- /.box-header -->
@@ -110,25 +118,25 @@
         <div class="browser-window">
 
             @if ($exception->code || $exception->message)
-                <table class="table args" style="background-color: #fcf8e3; margin: 0px;">
+                <table class="table args" style="margin: 0px;">
                     <tbody>
                     <tr>
 
                         <td style="width: 40px;">&nbsp;</td>
-                        <td class="name"><strong>exception</strong></td>
-                        <td class="value"><a href="/{{ config('reporter.base_uri') }}/exceptions?type={{ $exception->type }}">{{ $exception->type }}</a></td>
+                        <td class="name"><strong>Exception</strong></td>
+                        <td class="value"><code>{{ $exception->type }}</code></td>
                     </tr>
                     <tr>
                         @if ($exception->code)
                             <td style="width: 40px;">&nbsp;</td>
-                            <td class="name"><strong>code</strong></td>
+                            <td class="name"><strong>Code</strong></td>
                             <td class="value">{{ $exception->code }}</td>
                         @endif
 
                         @if ($exception->message)
                             <td style="width: 40px;">&nbsp;</td>
-                            <td class="name"><strong>message</strong></td>
-                            <td class="value">{{ $exception->message }}</td>
+                            <td class="name"><strong>Message</strong></td>
+                            <td class="value"><strong><em>{{ $exception->message }}</em></strong></td>
                         @endif
                     </tr>
                     </tbody>

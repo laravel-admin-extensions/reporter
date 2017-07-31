@@ -2,15 +2,13 @@
 
 namespace Encore\Admin\Reporter;
 
-use Encore\Admin\Auth\Database\Menu;
-use Encore\Admin\Auth\Database\Permission;
 use Encore\Admin\Extension;
-use Encore\Admin\Facades\Admin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
 class Reporter extends Extension
 {
+    use BootExtension;
+
     /**
      * @var Request
      */
@@ -23,42 +21,6 @@ class Reporter extends Extension
     public function __construct(Request $request)
     {
         $this->request = $request;
-    }
-
-    public static function boot()
-    {
-        static::registerRoutes();
-
-        static::importAssets();
-    }
-
-    /**
-     * Register routes for laravel-admin.
-     *
-     * @return void
-     */
-    public static function registerRoutes()
-    {
-        /* @var \Illuminate\Routing\Router $router */
-        Route::group(['prefix' => config('admin.route.prefix')], function ($router) {
-
-            $attributes = array_merge([
-                'middleware' => config('admin.route.middleware'),
-            ], static::config('route', []));
-
-            Route::group($attributes, function ($router) {
-
-                /* @var \Illuminate\Routing\Router $router */
-                $router->resource('exceptions', 'Encore\Admin\Reporter\ExceptionController');
-            });
-
-        });
-    }
-
-    public static function importAssets()
-    {
-        Admin::js('/vendor/laravel-admin-reporter/prism/prism.js');
-        Admin::css('/vendor/laravel-admin-reporter/prism/prism.css');
     }
 
     /**
@@ -130,7 +92,7 @@ class Reporter extends Extension
      */
     public function store(array $data)
     {
-        $exception = new Exception();
+        $exception = new ExceptionModel();
 
         $exception->type    = $data['exception'];
         $exception->code    = $data['code'];
@@ -149,30 +111,9 @@ class Reporter extends Extension
         try {
             $exception->save();
         } catch (\Exception $e) {
-            dd($e);
+            //dd($e);
         }
 
         return $exception->save();
-    }
-
-    public static function import()
-    {
-        $lastOrder = Menu::max('order');
-
-        // Add a menu.
-        Menu::create([
-            'parent_id' => 0,
-            'order'     => $lastOrder + 1,
-            'title'     => 'Exception Reporter',
-            'icon'      => 'fa-bug',
-            'uri'       => 'exceptions',
-        ]);
-
-        // Add a permission.
-        Permission::create([
-            'name'          => 'Exceptions reporter',
-            'slug'          => 'ext.reporter',
-            'http_path'     => admin_base_path('exceptions*'),
-        ]);
     }
 }

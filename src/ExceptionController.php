@@ -102,7 +102,7 @@ class ExceptionController
 
             Admin::script('Prism.highlightAll();');
 
-            $exception = Exception::findOrFail($id);
+            $exception = ExceptionModel::findOrFail($id);
             $trace = "#0 {$exception->file}({$exception->line})\n";
             $frames = (new Parser($trace.$exception->trace))->parse();
             $cookies = json_decode($exception->cookies, true);

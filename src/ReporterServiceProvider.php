@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 
 class ReporterServiceProvider extends ServiceProvider
 {
+    /**
+     * {@inheritdoc}
+     */
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-admin-reporter');

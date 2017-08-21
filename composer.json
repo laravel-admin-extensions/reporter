@@ -28,7 +28,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Encore\\Admin\\Repotrer\\RepotrerServiceProvider"
+                "Encore\\Admin\\Reporter\\ReporterServiceProvider"
             ]
 
         }

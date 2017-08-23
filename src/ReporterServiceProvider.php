@@ -21,5 +21,7 @@ class ReporterServiceProvider extends ServiceProvider
 
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
+
+        Reporter::boot();
     }
 }

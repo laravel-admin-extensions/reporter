@@ -4,7 +4,6 @@ namespace Encore\Admin\Reporter;
 
 use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Facades\Admin;
-use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Reporter\Tracer\Parser;
@@ -31,26 +30,26 @@ class ExceptionController
     public function grid()
     {
         return Admin::grid(ExceptionModel::class, function (Grid $grid) {
-
             $grid->model()->orderBy('id', 'desc');
 
             $grid->id('ID')->sortable();
 
             $grid->type()->display(function ($type) {
                 $path = explode('\\', $type);
+
                 return array_pop($path);
             });
 
             $grid->code();
             $grid->message()->style('width:400px')->display(function ($message) {
-
-                if (empty($message)) return '';
+                if (empty($message)) {
+                    return '';
+                }
 
                 return "<code>$message</code>";
             });
 
             $grid->request()->display(function () {
-
                 $color = ExceptionModel::$methodColor[$this->method];
 
                 return sprintf(
@@ -62,18 +61,14 @@ class ExceptionController
             });
 
             $grid->input()->display(function ($input) {
-
                 $input = json_decode($input, true);
 
                 if (empty($input)) {
                     return '';
                 }
 
-                return '<pre>' . json_encode($input, JSON_PRETTY_PRINT) . '</pre>';
-
+                return '<pre>'.json_encode($input, JSON_PRETTY_PRINT).'</pre>';
             });
-
-
 
             $grid->created_at();
 
@@ -88,7 +83,7 @@ class ExceptionController
             $grid->actions(function (Grid\Displayers\Actions $actions) {
                 $actions->disableEdit();
 
-                $path = $actions->getResource() . '/' . $actions->getKey();
+                $path = $actions->getResource().'/'.$actions->getKey();
                 $actions->prepend("<a href=\"$path\"><i class=\"fa fa-search-minus\"></i></a>");
             });
         });

@@ -19,31 +19,27 @@ class Parser implements \Iterator
         $this->frames = array_map(function ($frame) {
             return new Frame($frame);
         }, $frames);
+
         return $this->frames;
     }
 
     public function current()
     {
-
     }
 
     public function next()
     {
-
     }
 
     public function key()
     {
-
     }
 
     public function valid()
     {
-
     }
 
     public function rewind()
     {
-
     }
 }

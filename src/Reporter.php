@@ -16,6 +16,7 @@ class Reporter extends Extension
 
     /**
      * Reporter constructor.
+     *
      * @param Request $request
      */
     public function __construct(Request $request)
@@ -25,6 +26,7 @@ class Reporter extends Extension
 
     /**
      * @param \Exception $exception
+     *
      * @return mixed
      */
     public static function report(\Exception $exception)
@@ -36,6 +38,7 @@ class Reporter extends Extension
 
     /**
      * @param \Exception $exception
+     *
      * @return bool
      */
     public function reportException(\Exception $exception)
@@ -75,12 +78,13 @@ class Reporter extends Extension
      * Convert all items to string.
      *
      * @param $data
+     *
      * @return array
      */
     public function stringify($data)
     {
         return array_map(function ($item) {
-            return is_array($item) ? json_encode($item, JSON_OBJECT_AS_ARRAY) : (string)$item;
+            return is_array($item) ? json_encode($item, JSON_OBJECT_AS_ARRAY) : (string) $item;
         }, $data);
     }
 
@@ -88,25 +92,26 @@ class Reporter extends Extension
      * Store exception info to db.
      *
      * @param array $data
+     *
      * @return bool
      */
     public function store(array $data)
     {
         $exception = new ExceptionModel();
 
-        $exception->type    = $data['exception'];
-        $exception->code    = $data['code'];
+        $exception->type = $data['exception'];
+        $exception->code = $data['code'];
         $exception->message = $data['message'];
-        $exception->file    = $data['file'];
-        $exception->line    = $data['line'];
-        $exception->trace   = $data['trace'];
-        $exception->method  = $data['method'];
-        $exception->path    = $data['path'];
-        $exception->input   = $data['input'];
-        $exception->body    = $data['body'];
+        $exception->file = $data['file'];
+        $exception->line = $data['line'];
+        $exception->trace = $data['trace'];
+        $exception->method = $data['method'];
+        $exception->path = $data['path'];
+        $exception->input = $data['input'];
+        $exception->body = $data['body'];
         $exception->cookies = $data['cookies'];
         $exception->headers = $data['headers'];
-        $exception->ip      = $data['ip'];
+        $exception->ip = $data['ip'];
 
         try {
             $exception->save();

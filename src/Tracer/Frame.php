@@ -24,6 +24,7 @@ class Frame
         $this->parseFileAndLine($matches[1]);
         $this->parseCall($matches[2]);
         $this->fetchCodeBlock();
+
         return $this->attributes;
     }
 
@@ -40,7 +41,7 @@ class Frame
     public function parseCall($str)
     {
         if (empty($str)) {
-            return null;
+            return;
         }
         if (preg_match('/^[^(]+(->|::)/', $str, $m)) {
             preg_match('/([^:-]+)(?:->|::)([^(]+)\((.*)\)/', $str, $matches);
@@ -80,6 +81,7 @@ class Frame
         if (!$filename || !$lineNo) {
             return;
         }
+
         try {
             $file = new \SplFileObject($filename);
             $target = max(0, ($lineNo - (5 + 1)));
@@ -106,7 +108,6 @@ class Frame
         } catch (\RuntimeException $exc) {
             return;
         }
-        return;
     }
 
     public function getCodeBlock()
@@ -114,6 +115,7 @@ class Frame
         if (empty($this->code)) {
             return new CodeBlock();
         }
+
         return $this->code ?: new CodeBlock();
     }
 
@@ -124,7 +126,7 @@ class Frame
 
     public function args()
     {
-        if (empty ($this->attributes['args'])) {
+        if (empty($this->attributes['args'])) {
             return [];
         }
         $args = [];
@@ -132,6 +134,7 @@ class Frame
         foreach ($this->attributes['args'] as $key => $val) {
             $args[array_get($names, $key, "param$key")] = $val;
         }
+
         return $args;
     }
 
@@ -152,6 +155,7 @@ class Frame
                 $names[] = $reflection->getName();
             }
         }
+
         return $names;
     }
 
@@ -161,6 +165,7 @@ class Frame
             return [];
         }
         $args = explode(',', $args);
+
         return array_map('trim', $args);
     }
 

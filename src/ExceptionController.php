@@ -50,7 +50,7 @@ class ExceptionController
             });
 
             $grid->request()->display(function () {
-                $color = ExceptionModel::$methodColor[$this->method];
+                $color = array_get(ExceptionModel::$methodColors, $this->method, 'grey');
 
                 return sprintf(
                     '<span class="label bg-%s">%s</span><code>%s</code>',
@@ -74,8 +74,12 @@ class ExceptionController
 
             $grid->filter(function ($filter) {
                 $filter->disableIdFilter();
+                $filter->equal('method')->select(array_combine(ExceptionModel::$methods, ExceptionModel::$methods));
                 $filter->like('type');
                 $filter->like('message');
+                $filter->like('path');
+                $filter->like('ip');
+                $filter->between('created_at', trans('admin.created_at'))->datetime();
             });
 
             $grid->disableCreation();

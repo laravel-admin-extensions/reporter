@@ -76,9 +76,7 @@ class ExceptionController
                 $filter->disableIdFilter();
                 $filter->like('type');
                 $filter->like('message');
-                
-                $filter->between("created_at", "时间")
-                ->datetime();
+                $filter->between("created_at")->datetime();
             });
 
             $grid->disableCreation();

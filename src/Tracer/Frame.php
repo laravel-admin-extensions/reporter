@@ -2,6 +2,7 @@
 
 namespace Encore\Admin\Reporter\Tracer;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class Frame
@@ -48,7 +49,7 @@ class Frame
             $this->attributes['class'] = $matches[1];
             $this->attributes['method'] = $matches[2];
             $this->attributes['args'] = $this->extractArgs($matches[3]);
-            if (Str::contains($matches[2], ['{closure}']) && array_get($this->attributes, 'name') == '[internal function]') {
+            if (Str::contains($matches[2], ['{closure}']) && Arr::get($this->attributes, 'name') == '[internal function]') {
                 $this->attributes['name'] .= " $matches[1]->$matches[2]";
             }
             // class method call
@@ -61,10 +62,10 @@ class Frame
 
     public function fetchCodeBlock()
     {
-        $filename = array_get($this->attributes, 'file');
-        $lineNo = array_get($this->attributes, 'line');
-        $class = array_get($this->attributes, 'class');
-        $method = array_get($this->attributes, 'method');
+        $filename = Arr::get($this->attributes, 'file');
+        $lineNo = Arr::get($this->attributes, 'line');
+        $class = Arr::get($this->attributes, 'class');
+        $method = Arr::get($this->attributes, 'method');
         if ((!$filename || !$lineNo) && ($class && $method)) {
             if (!class_exists($class)) {
                 return;
@@ -121,7 +122,7 @@ class Frame
 
     public function method()
     {
-        return array_get($this->attributes, 'method', array_get($this->attributes, 'function', ''));
+        return Arr::get($this->attributes, 'method', Arr::get($this->attributes, 'function', ''));
     }
 
     public function args()
@@ -132,7 +133,7 @@ class Frame
         $args = [];
         $names = $this->getParameterNames();
         foreach ($this->attributes['args'] as $key => $val) {
-            $args[array_get($names, $key, "param$key")] = $val;
+            $args[Arr::get($names, $key, "param$key")] = $val;
         }
 
         return $args;
@@ -144,8 +145,8 @@ class Frame
     public function getParameterNames()
     {
         $names = [];
-        $class = array_get($this->attributes, 'class');
-        $method = array_get($this->attributes, 'method');
+        $class = Arr::get($this->attributes, 'class');
+        $method = Arr::get($this->attributes, 'method');
         if ($class && isset($method)) {
             $classReflection = new \ReflectionClass($class);
             if (!$classReflection->hasMethod($method)) {
@@ -171,16 +172,16 @@ class Frame
 
     public function line()
     {
-        return array_get($this->attributes, 'line', 0);
+        return Arr::get($this->attributes, 'line', 0);
     }
 
     public function __call($method, $arguments = [])
     {
-        return array_get($this->attributes, $method, '');
+        return Arr::get($this->attributes, $method, '');
     }
 
     public function __get($key)
     {
-        return array_get($this->attributes, $key, '');
+        return Arr::get($this->attributes, $key, '');
     }
 }

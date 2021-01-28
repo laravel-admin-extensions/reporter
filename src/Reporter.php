@@ -4,6 +4,7 @@ namespace Encore\Admin\Reporter;
 
 use Encore\Admin\Extension;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class Reporter extends Extension
 {
@@ -29,7 +30,7 @@ class Reporter extends Extension
      *
      * @return mixed
      */
-    public static function report(\Exception $exception)
+    public static function report(\Throwable $exception)
     {
         $reporter = new static(request());
 
@@ -41,7 +42,7 @@ class Reporter extends Extension
      *
      * @return bool
      */
-    public function reportException(\Exception $exception)
+    public function reportException(\Throwable $exception)
     {
         $data = [
 
@@ -49,10 +50,10 @@ class Reporter extends Extension
             'method'    => $this->request->getMethod(),
             'ip'        => $this->request->getClientIps(),
             'path'      => $this->request->path(),
-            'query'     => array_except($this->request->all(), ['_pjax', '_token', '_method', '_previous_']),
+            'query'     => Arr::except($this->request->all(), ['_pjax', '_token', '_method', '_previous_']),
             'body'      => $this->request->getContent(),
             'cookies'   => $this->request->cookies->all(),
-            'headers'   => array_except($this->request->headers->all(), 'cookie'),
+            'headers'   => Arr::except($this->request->headers->all(), 'cookie'),
 
             // Exception info.
             'exception' => get_class($exception),

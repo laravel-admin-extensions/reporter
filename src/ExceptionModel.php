@@ -15,6 +15,22 @@ class ExceptionModel extends Model
         'OPTIONS'   => 'grey',
     ];
 
+    protected $fillable = [
+        'type',
+        'code',
+        'message',
+        'file',
+        'line',
+        'trace',
+        'method',
+        'path',
+        'query',
+        'body',
+        'cookies',
+        'headers',
+        'ip',
+    ];
+
     /**
      * Settings constructor.
      *

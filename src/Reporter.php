@@ -101,11 +101,11 @@ class Reporter extends Extension
     {
         try {
             ExceptionModel::query()->create($data);
+
             return true;
         } catch (Throwable $e) {
             return false;
             //dd($e);
         }
-
     }
 }

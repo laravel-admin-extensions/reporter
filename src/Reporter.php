@@ -57,7 +57,7 @@ class Reporter extends Extension
             'headers'   => Arr::except($this->request->headers->all(), 'cookie'),
 
             // Exception info.
-            'type' => get_class($exception),
+            'type'      => get_class($exception),
             'code'      => $exception->getCode(),
             'file'      => $exception->getFile(),
             'line'      => $exception->getLine(),

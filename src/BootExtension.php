@@ -3,6 +3,7 @@
 namespace Encore\Admin\Reporter;
 
 use Encore\Admin\Admin;
+use Illuminate\Routing\Router;
 
 trait BootExtension
 {
@@ -23,7 +24,7 @@ trait BootExtension
     protected static function registerRoutes()
     {
         parent::routes(function ($router) {
-            /* @var \Illuminate\Routing\Router $router */
+            /* @var Router $router */
             $router->resource('exceptions', 'Encore\Admin\Reporter\ExceptionController');
         });
     }

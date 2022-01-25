@@ -4,6 +4,8 @@ namespace Encore\Admin\Reporter;
 
 use Encore\Admin\Extension;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Throwable;
 
 class Reporter extends Extension
 {
@@ -25,23 +27,23 @@ class Reporter extends Extension
     }
 
     /**
-     * @param \Exception $exception
+     * @param Throwable $exception
      *
-     * @return mixed
+     * @return void
      */
-    public static function report(\Exception $exception)
+    public static function report(Throwable $exception)
     {
         $reporter = new static(request());
 
-        return $reporter->reportException($exception);
+        $reporter->reportException($exception);
     }
 
     /**
-     * @param \Exception $exception
+     * @param Throwable $exception
      *
-     * @return bool
+     * @return void
      */
-    public function reportException(\Exception $exception)
+    public function reportException(Throwable $exception)
     {
         $data = [
 
@@ -49,13 +51,13 @@ class Reporter extends Extension
             'method'    => $this->request->getMethod(),
             'ip'        => $this->request->getClientIps(),
             'path'      => $this->request->path(),
-            'query'     => array_except($this->request->all(), ['_pjax', '_token', '_method', '_previous_']),
+            'query'     => Arr::except($this->request->all(), ['_pjax', '_token', '_method', '_previous_']),
             'body'      => $this->request->getContent(),
             'cookies'   => $this->request->cookies->all(),
-            'headers'   => array_except($this->request->headers->all(), 'cookie'),
+            'headers'   => Arr::except($this->request->headers->all(), 'cookie'),
 
             // Exception info.
-            'exception' => get_class($exception),
+            'type'      => get_class($exception),
             'code'      => $exception->getCode(),
             'file'      => $exception->getFile(),
             'line'      => $exception->getLine(),
@@ -67,7 +69,7 @@ class Reporter extends Extension
 
         try {
             $this->store($data);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
 //            $result = $this->reportException($e);
         }
 
@@ -81,7 +83,7 @@ class Reporter extends Extension
      *
      * @return array
      */
-    public function stringify($data)
+    public function stringify($data): array
     {
         return array_map(function ($item) {
             return is_array($item) ? json_encode($item, JSON_OBJECT_AS_ARRAY) : (string) $item;
@@ -95,30 +97,15 @@ class Reporter extends Extension
      *
      * @return bool
      */
-    public function store(array $data)
+    public function store(array $data): bool
     {
-        $exception = new ExceptionModel();
-
-        $exception->type = $data['exception'];
-        $exception->code = $data['code'];
-        $exception->message = $data['message'];
-        $exception->file = $data['file'];
-        $exception->line = $data['line'];
-        $exception->trace = $data['trace'];
-        $exception->method = $data['method'];
-        $exception->path = $data['path'];
-        $exception->query = $data['query'];
-        $exception->body = $data['body'];
-        $exception->cookies = $data['cookies'];
-        $exception->headers = $data['headers'];
-        $exception->ip = $data['ip'];
-
         try {
-            $exception->save();
-        } catch (\Exception $e) {
+            ExceptionModel::query()->create($data);
+
+            return true;
+        } catch (Throwable $e) {
+            return false;
             //dd($e);
         }
-
-        return $exception->save();
     }
 }

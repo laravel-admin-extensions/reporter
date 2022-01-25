@@ -7,6 +7,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Reporter\Tracer\Parser;
+use Illuminate\Http\JsonResponse;
 
 class ExceptionController
 {
@@ -17,7 +18,7 @@ class ExceptionController
      *
      * @return Content
      */
-    public function index()
+    public function index(): Content
     {
         return Admin::content(function (Content $content) {
             $content->header('Exception');
@@ -27,7 +28,7 @@ class ExceptionController
         });
     }
 
-    public function grid()
+    public function grid(): Grid
     {
         return Admin::grid(ExceptionModel::class, function (Grid $grid) {
             $grid->model()->orderBy('id', 'desc');
@@ -76,7 +77,7 @@ class ExceptionController
                 $filter->disableIdFilter();
                 $filter->like('type');
                 $filter->like('message');
-                $filter->between("created_at")->datetime();
+                $filter->between('created_at')->datetime();
             });
 
             $grid->disableCreation();
@@ -112,11 +113,11 @@ class ExceptionController
         });
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $ids = explode(',', $id);
 
-        if (ExceptionModel::whereIn('id', $ids)->delete()) {
+        if (ExceptionModel::query()->whereIn('id', $ids)->delete()) {
             return response()->json([
                 'status'  => true,
                 'message' => trans('admin.delete_succeeded'),
